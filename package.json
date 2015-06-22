@@ -1,0 +1,12 @@
+{
+  "name": "stop",
+  "version": "0.0.1",
+  "description": "Toy language",
+  "author": "Mads Sejersen",
+  "license": "MIT",
+  "dependencies": {
+    "coffee-script": "^1.9.3",
+    "jison": "^0.4.15",
+    "recast": "^0.10.12"
+  }
+}
