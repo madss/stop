@@ -4,6 +4,8 @@
 \s+                      { /* skip whitespace */ }
 "="                      { return '='; }
 ";"                      { return ';'; }
+"("                      { return '('; }
+")"                      { return ')'; }
 [0-9]+("."[0-9]+)?\b     { return 'NUMBER'; }
 [_a-zA-Z][_a-zA-Z0-9]+\b { return 'ID'; }
 <<EOF>>                  { return 'EOF'; }
@@ -27,6 +29,8 @@ main
 expr
     : NUMBER
         { $$ = new yy.NumExpr(Number(yytext)); }
+    | '(' expr ')'
+        { $$ = $2; }
     | ID '=' expr
         { $$ = new yy.AssignExpr($1, $3); }
     | expr ';' expr
