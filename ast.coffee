@@ -4,3 +4,6 @@ class exports.NumExpr
 
 class exports.AssignExpr
   constructor: (@id, @expr) ->
+
+class exports.SeqExpr
+  constructor: (@left, @right) ->
