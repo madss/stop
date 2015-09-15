@@ -1,8 +1,8 @@
 fs = require 'fs'
 parser = require './parser'
-translater = require './translater'
+js = require './js'
 
 input = fs.readFileSync process.argv[2], { encoding: 'utf-8' }
 ast = parser.parse input
-js = translater.translate(ast)
-console.log js
+output = js.translate(ast)
+console.log output
