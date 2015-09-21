@@ -26,25 +26,35 @@ class Scope
     else if expr instanceof ast.MatchExpr
       @vars.push '$$'
       result = b.identifier '$$'
+      @vars.push '$1'
+      value = b.identifier '$1'
       label = b.identifier 'label'
       mstmts = []
+      v = @translateExpr mstmts, expr.expr
+      mstmts.push (b.expressionStatement (b.assignmentExpression '=', value, v))
       for mrule in expr.mrules
-        left = @translateExpr mstmts, expr.expr
-        right = @translatePat mstmts, mrule.pat
-        cond = b.binaryExpression '===', left, right
         bstmts = []
         e = @translateExpr bstmts, mrule.expr
         bstmts.push (b.expressionStatement (b.assignmentExpression '=', result, e))
         bstmts.push (b.breakStatement label)
-        mstmts.push (b.ifStatement cond, b.blockStatement bstmts)
+        cond = @translatePat mstmts, value, mrule.pat
+        if cond
+          mstmts.push (b.ifStatement cond, b.blockStatement bstmts)
+        else
+          Array.prototype.push.apply mstmts, bstmts
+          break
       stmts.push (b.labeledStatement label, b.blockStatement mstmts)
       result
     else
       throw 'Unknown expression: ' + expr
 
-  translatePat: (stmts, pat) ->
-    if pat instanceof ast.NumPat
-      b.literal pat.value
+  translatePat: (stmts, id, pat) ->
+    if pat instanceof ast.IdPat
+      stmts.push (b.expressionStatement (b.assignmentExpression '=', (b.identifier pat.value), id))
+      null
+    else if pat instanceof ast.NumPat
+      e = b.literal pat.value
+      b.binaryExpression '===', id, e
     else
       throw 'Unknown pattern: ' + pat
 

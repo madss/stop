@@ -25,6 +25,10 @@ class exports.MRule
   toString: -> 'MRule(' + @pat + ', ' + @expr + ')'
 
 # Patterns
+class exports.IdPat
+  constructor: (@value) ->
+  toString: -> 'IdPat(' + @value + ')'
+
 class exports.NumPat
   constructor: (@value) ->
   toString: -> 'NumPat(' + @value + ')'

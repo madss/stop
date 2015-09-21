@@ -4,15 +4,16 @@
 \s+                      { /* skip whitespace */ }
 "="                      { return '='; }
 "|"                      { return '|'; }
+","                      { return ','; }
 ";"                      { return ';'; }
 "("                      { return '('; }
 ")"                      { return ')'; }
-"->"                      { return '->'; }
+"->"                     { return '->'; }
 "match"                  { return 'MATCH'; }
 "of"                     { return 'OF'; }
-"end"                     { return 'END'; }
+"end"                    { return 'END'; }
 [0-9]+("."[0-9]+)?\b     { return 'NUMBER'; }
-[_a-zA-Z][_a-zA-Z0-9]+\b { return 'ID'; }
+[_a-zA-Z][_a-zA-Z0-9]*\b { return 'ID'; }
 <<EOF>>                  { return 'EOF'; }
 .                        { return 'INVALID'; }
 
@@ -58,6 +59,8 @@ mrule
     ;
 
 pat
-    : NUMBER
+    : ID
+        { $$ = new yy.IdPat(yytext); }
+    | NUMBER
         { $$ = new yy.NumPat(Number(yytext)); }
     ;
