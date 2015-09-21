@@ -20,6 +20,14 @@ class exports.MatchExpr
   constructor: (@expr, @mrules) ->
   toString: -> 'MatchExpr(' + @expr + ', ' + @mrules + ')'
 
+class exports.FnExpr
+  constructor: (@id, @expr) ->
+  toString: -> 'FnExpr(' + @id + ', ' + @expr + ')'
+
+class exports.AppExpr
+  constructor: (@id, @arg) ->
+  toString: -> 'AppExpr(' + @id + ', ' + @arg + ')'
+
 class exports.PrintExpr
   constructor: (@expr) ->
   toString: -> 'PrintExpr(' + @expr + ')'

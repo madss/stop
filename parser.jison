@@ -12,6 +12,7 @@
 "match"                  { return 'MATCH'; }
 "of"                     { return 'OF'; }
 "end"                    { return 'END'; }
+"fn"                     { return 'FN'; }
 "print"                  { return 'PRINT'; }
 [0-9]+("."[0-9]+)?\b     { return 'NUMBER'; }
 [_a-zA-Z][_a-zA-Z0-9]*\b { return 'ID'; }
@@ -24,7 +25,7 @@
 
 %left ';'
 %left '='
-%left 'PRINT'
+%left 'FN', 'PRINT', 'ID'
 
 %start main
 
@@ -47,6 +48,10 @@ expr
         { $$ = new yy.SeqExpr($1, $3); }
     | MATCH expr OF matches END
         { $$ = new yy.MatchExpr($2, $4); }
+    | FN ID '->' expr
+        { $$ = new yy.FnExpr($2, $4); }
+    | ID expr
+        { $$ = new yy.AppExpr($1, $2); }
     | PRINT expr
         { $$ = new yy.PrintExpr($2); }
     ;

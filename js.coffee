@@ -45,6 +45,15 @@ class Scope
           break
       stmts.push (b.labeledStatement label, b.blockStatement mstmts)
       result
+    else if expr instanceof ast.FnExpr
+      bstmts = []
+      e = @translateExpr bstmts, expr.expr
+      bstmts.push (b.returnStatement e)
+      b.functionExpression null, [b.identifier expr.id], (b.blockStatement bstmts)
+    else if expr instanceof ast.AppExpr
+      id = b.identifier expr.id
+      arg = @translateExpr stmts, expr.arg
+      b.callExpression id, [arg]
     else if expr instanceof ast.PrintExpr
       e = @translateExpr stmts, expr.expr
       stmts.push (b.expressionStatement (b.callExpression (b.memberExpression (b.identifier 'console'), (b.identifier 'log')), [e]))
