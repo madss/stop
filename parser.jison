@@ -12,6 +12,7 @@
 "match"                  { return 'MATCH'; }
 "of"                     { return 'OF'; }
 "end"                    { return 'END'; }
+"print"                  { return 'PRINT'; }
 [0-9]+("."[0-9]+)?\b     { return 'NUMBER'; }
 [_a-zA-Z][_a-zA-Z0-9]*\b { return 'ID'; }
 <<EOF>>                  { return 'EOF'; }
@@ -21,7 +22,9 @@
 
 /* operator associations and precedence */
 
-%left '=', ';'
+%left ';'
+%left '='
+%left 'PRINT'
 
 %start main
 
@@ -44,6 +47,8 @@ expr
         { $$ = new yy.SeqExpr($1, $3); }
     | MATCH expr OF matches END
         { $$ = new yy.MatchExpr($2, $4); }
+    | PRINT expr
+        { $$ = new yy.PrintExpr($2); }
     ;
 
 matches

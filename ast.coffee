@@ -1,4 +1,5 @@
 # Expressions
+
 class exports.IdExpr
   constructor: (@value) ->
   toString: -> 'IdExpr(' + @value + ')'
@@ -19,7 +20,12 @@ class exports.MatchExpr
   constructor: (@expr, @mrules) ->
   toString: -> 'MatchExpr(' + @expr + ', ' + @mrules + ')'
 
+class exports.PrintExpr
+  constructor: (@expr) ->
+  toString: -> 'PrintExpr(' + @expr + ')'
+
 # Matches
+
 class exports.MRule
   constructor: (@pat, @expr) ->
   toString: -> 'MRule(' + @pat + ', ' + @expr + ')'
