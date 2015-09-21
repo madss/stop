@@ -8,6 +8,10 @@ class exports.NumExpr
   constructor: (@value) ->
   toString: -> 'NumExpr(' + @value + ')'
 
+class exports.BinExpr
+  constructor: (@kind, @left, @right) ->
+  toString: -> 'BinExpr(' + @kind + ', ' + @left + ', ' + @right + ')'
+
 class exports.AssignExpr
   constructor: (@id, @expr) ->
   toString: -> 'AssignExpr(' + @id + ', ' + @expr + ')'

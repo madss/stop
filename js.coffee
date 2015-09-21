@@ -13,6 +13,10 @@ class Scope
       b.identifier expr.value
     else if expr instanceof ast.NumExpr
       b.literal expr.value
+    else if expr instanceof ast.BinExpr
+      left = @translateExpr stmts, expr.left
+      right = @translateExpr stmts, expr.right
+      b.binaryExpression expr.kind, left, right
     else if expr instanceof ast.AssignExpr
       # FIXME: Only push var if it is undeclared
       @vars.push expr.id

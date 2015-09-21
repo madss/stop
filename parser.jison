@@ -2,13 +2,15 @@
 %%
 
 \s+                      { /* skip whitespace */ }
+"->"                     { return '->'; }
+"+"                      { return '+'; }
+"-"                      { return '-'; }
 "="                      { return '='; }
 "|"                      { return '|'; }
 ","                      { return ','; }
 ";"                      { return ';'; }
 "("                      { return '('; }
 ")"                      { return ')'; }
-"->"                     { return '->'; }
 "match"                  { return 'MATCH'; }
 "of"                     { return 'OF'; }
 "end"                    { return 'END'; }
@@ -26,6 +28,7 @@
 %left ';'
 %left '='
 %left 'FN', 'PRINT', 'ID'
+%left '+', '-'
 
 %start main
 
@@ -42,6 +45,10 @@ expr
         { $$ = new yy.NumExpr(Number(yytext)); }
     | '(' expr ')'
         { $$ = $2; }
+    | expr '+' expr
+        { $$ = new yy.BinExpr($2, $1, $3); }
+    | expr '-' expr
+        { $$ = new yy.BinExpr($2, $1, $3); }
     | ID '=' expr
         { $$ = new yy.AssignExpr($1, $3); }
     | expr ';' expr
