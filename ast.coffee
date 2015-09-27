@@ -32,6 +32,10 @@ class exports.AppExpr
   constructor: (@id, @arg) ->
   toString: -> 'AppExpr(' + @id + ', ' + @arg + ')'
 
+class exports.TypeExpr
+  constructor: (@fields) ->
+  toString: -> 'TypeExpr(' + (@fields.join ', ') + ')'
+
 class exports.PrintExpr
   constructor: (@expr) ->
   toString: -> 'PrintExpr(' + @expr + ')'
@@ -50,3 +54,11 @@ class exports.IdPat
 class exports.NumPat
   constructor: (@value) ->
   toString: -> 'NumPat(' + @value + ')'
+
+class exports.TypePat
+  constructor: (@id, @fields) ->
+  toString: -> 'TypePat(' + $id + ', [' + (@pats.join ', ') + '])'
+
+class exports.TypePatField
+  constructor: (@key, @pat) ->
+  toString: -> @key + ': ' + @pat

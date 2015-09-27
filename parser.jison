@@ -15,6 +15,7 @@
 "of"                     { return 'OF'; }
 "end"                    { return 'END'; }
 "fn"                     { return 'FN'; }
+"type"                   { return 'TYPE'; }
 "print"                  { return 'PRINT'; }
 [0-9]+("."[0-9]+)?\b     { return 'NUMBER'; }
 [_a-zA-Z][_a-zA-Z0-9]*\b { return 'ID'; }
@@ -59,8 +60,19 @@ expr
         { $$ = new yy.FnExpr($2, $4); }
     | ID expr
         { $$ = new yy.AppExpr($1, $2); }
+    | TYPE '(' ids ')'
+        { $$ = new yy.TypeExpr($3); }
     | PRINT expr
         { $$ = new yy.PrintExpr($2); }
+    ;
+
+ids
+    :
+        { $$ = []; }
+    | ID
+        { $$ = [$1]; }
+    | ids ',' ID
+        { $$ = $1; $$.push($3); }
     ;
 
 matches
@@ -80,4 +92,15 @@ pat
         { $$ = new yy.IdPat(yytext); }
     | NUMBER
         { $$ = new yy.NumPat(Number(yytext)); }
+    | ID '(' pattypefields ')'
+        { $$ = new yy.TypePat($1, $3); }
+    ;
+
+pattypefields
+    :
+        { $$ = []; }
+    | ID '=' pat
+        { $$ = [new yy.TypePatField($1, $3)]; }
+    | pats ',' ID '=' pat
+        { $$ = $1; $$.push(new yy.TypePatField($3, $5)); }
     ;
