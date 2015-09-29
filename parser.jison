@@ -7,6 +7,7 @@
 "-"                      { return '-'; }
 "="                      { return '='; }
 "|"                      { return '|'; }
+"."                      { return '.'; }
 ","                      { return ','; }
 ";"                      { return ';'; }
 "("                      { return '('; }
@@ -41,19 +42,19 @@ main
     ;
 
 expr
-    : ID
-        { $$ = new yy.IdExpr(yytext); }
-    | NUMBER
+    : NUMBER
         { $$ = new yy.NumExpr(Number(yytext)); }
     | STRING
         { $$ = new yy.StrExpr(yytext.substr(1, yytext.length - 2)); }
+    | lval
+        { $$ = $1; }
     | '(' expr ')'
         { $$ = $2; }
     | expr '+' expr
         { $$ = new yy.BinExpr($2, $1, $3); }
     | expr '-' expr
         { $$ = new yy.BinExpr($2, $1, $3); }
-    | ID '=' expr
+    | lval '=' expr
         { $$ = new yy.AssignExpr($1, $3); }
     | expr ';' expr
         { $$ = new yy.SeqExpr($1, $3); }
@@ -67,6 +68,13 @@ expr
         { $$ = new yy.TypeExpr($3); }
     | PRINT expr
         { $$ = new yy.PrintExpr($2); }
+    ;
+
+lval
+    : ID
+        { $$ = new yy.IdExpr(yytext); }
+    | expr '.' ID
+        { $$ = new yy.MemberExpr($1, $3); }
     ;
 
 ids

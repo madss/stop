@@ -38,12 +38,16 @@ class Scope
       left = @translateExpr stmts, expr.left
       right = @translateExpr stmts, expr.right
       b.binaryExpression expr.kind, left, right
+    else if expr instanceof ast.MemberExpr
+      e = @translateExpr stmts, expr.expr
+      b.memberExpression e, (idExpr expr.id)
     else if expr instanceof ast.AssignExpr
       # FIXME: Only push var if it is undeclared
-      @vars.push expr.id
-      id = b.identifier expr.id
+      if expr.lval instanceof ast.IdExpr
+        @vars.push expr.lval.value
+      lval = @translateExpr stmts, expr.lval
       e = @translateExpr stmts, expr.expr
-      b.assignmentExpression '=', id, e
+      b.assignmentExpression '=', lval, e
     else if expr instanceof ast.SeqExpr
       e = @translateExpr stmts, expr.left
       stmts.push b.expressionStatement e

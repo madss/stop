@@ -16,9 +16,13 @@ class exports.BinExpr
   constructor: (@kind, @left, @right) ->
   toString: -> 'BinExpr(' + @kind + ', ' + @left + ', ' + @right + ')'
 
+class exports.MemberExpr
+  constructor: (@expr, @id) ->
+  toString: -> 'MemberExpr(' + @expr + ', ' + @id + ')'
+
 class exports.AssignExpr
-  constructor: (@id, @expr) ->
-  toString: -> 'AssignExpr(' + @id + ', ' + @expr + ')'
+  constructor: (@lval, @expr) ->
+  toString: -> 'AssignExpr(' + @lval + ', ' + @expr + ')'
 
 class exports.SeqExpr
   constructor: (@left, @right) ->
@@ -65,7 +69,7 @@ class exports.StrPat
 
 class exports.TypePat
   constructor: (@id, @fields) ->
-  toString: -> 'TypePat(' + $id + ', [' + (@pats.join ', ') + '])'
+  toString: -> 'TypePat(' + @id + ', [' + (@fields.join ', ') + '])'
 
 class exports.TypePatField
   constructor: (@key, @pat) ->
