@@ -8,6 +8,10 @@ class exports.NumExpr
   constructor: (@value) ->
   toString: -> 'NumExpr(' + @value + ')'
 
+class exports.StrExpr
+  constructor: (@value) ->
+  toString: -> 'StrExpr(' + @value + ')'
+
 class exports.BinExpr
   constructor: (@kind, @left, @right) ->
   toString: -> 'BinExpr(' + @kind + ', ' + @left + ', ' + @right + ')'
@@ -54,6 +58,10 @@ class exports.IdPat
 class exports.NumPat
   constructor: (@value) ->
   toString: -> 'NumPat(' + @value + ')'
+
+class exports.StrPat
+  constructor: (@value) ->
+  toString: -> 'StrPat(' + @value + ')'
 
 class exports.TypePat
   constructor: (@id, @fields) ->

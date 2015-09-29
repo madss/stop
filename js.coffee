@@ -32,6 +32,8 @@ class Scope
       b.identifier expr.value
     else if expr instanceof ast.NumExpr
       b.literal expr.value
+    else if expr instanceof ast.StrExpr
+      b.literal expr.value
     else if expr instanceof ast.BinExpr
       left = @translateExpr stmts, expr.left
       right = @translateExpr stmts, expr.right
@@ -91,6 +93,11 @@ class Scope
       stmts.push (assignStmt (idExpr pat.value), expr)
       stmts
     else if pat instanceof ast.NumPat
+      bstmts = []
+      cond = eqExpr expr, (litExpr pat.value)
+      stmts.push (b.ifStatement cond, (b.blockStatement bstmts))
+      bstmts
+    else if pat instanceof ast.StrPat
       bstmts = []
       cond = eqExpr expr, (litExpr pat.value)
       stmts.push (b.ifStatement cond, (b.blockStatement bstmts))

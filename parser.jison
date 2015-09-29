@@ -18,6 +18,7 @@
 "type"                   { return 'TYPE'; }
 "print"                  { return 'PRINT'; }
 [0-9]+("."[0-9]+)?\b     { return 'NUMBER'; }
+"'"[^']*"'"              { return 'STRING'; }
 [_a-zA-Z][_a-zA-Z0-9]*\b { return 'ID'; }
 <<EOF>>                  { return 'EOF'; }
 .                        { return 'INVALID'; }
@@ -44,6 +45,8 @@ expr
         { $$ = new yy.IdExpr(yytext); }
     | NUMBER
         { $$ = new yy.NumExpr(Number(yytext)); }
+    | STRING
+        { $$ = new yy.StrExpr(yytext.substr(1, yytext.length - 2)); }
     | '(' expr ')'
         { $$ = $2; }
     | expr '+' expr
@@ -92,6 +95,8 @@ pat
         { $$ = new yy.IdPat(yytext); }
     | NUMBER
         { $$ = new yy.NumPat(Number(yytext)); }
+    | STRING
+        { $$ = new yy.NumPat(yytext.substr(1, yytext.length - 2)); }
     | ID '(' pattypefields ')'
         { $$ = new yy.TypePat($1, $3); }
     ;
