@@ -37,8 +37,8 @@ class exports.FnExpr
   toString: -> 'FnExpr(' + @id + ', ' + @expr + ')'
 
 class exports.AppExpr
-  constructor: (@id, @arg) ->
-  toString: -> 'AppExpr(' + @id + ', ' + @arg + ')'
+  constructor: (@expr, @args) ->
+  toString: -> 'AppExpr(' + @expr + ', ' + @args + ')'
 
 class exports.TypeExpr
   constructor: (@fields) ->

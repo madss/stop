@@ -76,9 +76,9 @@ class Scope
       bstmts.push (b.returnStatement e)
       b.functionExpression null, [b.identifier expr.id], (b.blockStatement bstmts)
     else if expr instanceof ast.AppExpr
-      id = b.identifier expr.id
-      arg = @translateExpr stmts, expr.arg
-      b.callExpression id, [arg]
+      f = @translateExpr stmts, expr.expr
+      args = ((@translateExpr stmts, arg) for arg in expr.args)
+      b.callExpression f, args
     else if expr instanceof ast.TypeExpr
       ids = (b.identifier id for id in expr.fields)
       assignments = (b.expressionStatement (b.assignmentExpression '=', \

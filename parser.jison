@@ -32,6 +32,8 @@
 %left '='
 %left 'FN', 'PRINT', 'ID'
 %left '+', '-'
+%left '.'
+%nonassoc '('
 
 %start main
 
@@ -62,12 +64,19 @@ expr
         { $$ = new yy.MatchExpr($2, $4); }
     | FN ID '->' expr
         { $$ = new yy.FnExpr($2, $4); }
-    | ID expr
-        { $$ = new yy.AppExpr($1, $2); }
+    | expr '(' exprs ')'
+        { $$ = new yy.AppExpr($1, $3); }
     | TYPE '(' ids ')'
         { $$ = new yy.TypeExpr($3); }
-    | PRINT expr
-        { $$ = new yy.PrintExpr($2); }
+    ;
+
+exprs
+    :
+        { $$ = []; }
+    | expr
+        { $$ = [$1]; }
+    | exprs ',' expr
+        { $$ = $1; $$.push($3); }
     ;
 
 lval
