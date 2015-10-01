@@ -17,7 +17,6 @@
 "end"                    { return 'END'; }
 "fn"                     { return 'FN'; }
 "type"                   { return 'TYPE'; }
-"print"                  { return 'PRINT'; }
 [0-9]+("."[0-9]+)?\b     { return 'NUMBER'; }
 "'"[^']*"'"              { return 'STRING'; }
 [_a-zA-Z][_a-zA-Z0-9]*\b { return 'ID'; }
@@ -30,7 +29,7 @@
 
 %left ';'
 %left '='
-%left 'FN', 'PRINT', 'ID'
+%left 'FN', 'ID'
 %left '+', '-'
 %left '.'
 %nonassoc '('

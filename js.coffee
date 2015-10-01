@@ -85,10 +85,6 @@ class Scope
         (b.memberExpression b.thisExpression(), id), id) \
         for id in ids)
       b.functionExpression null, ids, (b.blockStatement assignments)
-    else if expr instanceof ast.PrintExpr
-      e = @translateExpr stmts, expr.expr
-      stmts.push (b.expressionStatement (b.callExpression (b.memberExpression (b.identifier 'console'), (b.identifier 'log')), [e]))
-      e
     else
       throw 'Unknown expression: ' + expr
 

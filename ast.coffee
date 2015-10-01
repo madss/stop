@@ -44,10 +44,6 @@ class exports.TypeExpr
   constructor: (@fields) ->
   toString: -> 'TypeExpr(' + (@fields.join ', ') + ')'
 
-class exports.PrintExpr
-  constructor: (@expr) ->
-  toString: -> 'PrintExpr(' + @expr + ')'
-
 # Matches
 
 class exports.MRule
