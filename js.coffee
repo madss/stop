@@ -84,7 +84,11 @@ class Scope
       assignments = (b.expressionStatement (b.assignmentExpression '=', \
         (b.memberExpression b.thisExpression(), id), id) \
         for id in ids)
-      b.functionExpression null, ids, (b.blockStatement assignments)
+      cond = b.binaryExpression 'instanceof', b.thisExpression(), (b.identifier 'type')
+      b.functionExpression (b.identifier 'type'), ids, (b.blockStatement [
+        b.ifStatement cond, \
+        (b.blockStatement assignments), \
+        (b.blockStatement [b.returnStatement (b.newExpression (b.identifier 'type'), ids)])])
     else
       throw 'Unknown expression: ' + expr
 

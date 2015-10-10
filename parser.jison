@@ -122,6 +122,6 @@ pattypefields
         { $$ = []; }
     | ID '=' pat
         { $$ = [new yy.TypePatField($1, $3)]; }
-    | pats ',' ID '=' pat
+    | pattypefields ',' ID '=' pat
         { $$ = $1; $$.push(new yy.TypePatField($3, $5)); }
     ;
