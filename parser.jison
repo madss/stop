@@ -12,6 +12,8 @@
 ";"                      { return ';'; }
 "("                      { return '('; }
 ")"                      { return ')'; }
+"["                      { return '['; }
+"]"                      { return ']'; }
 "match"                  { return 'MATCH'; }
 "of"                     { return 'OF'; }
 "end"                    { return 'END'; }
@@ -51,6 +53,8 @@ expr
         { $$ = $1; }
     | '(' expr ')'
         { $$ = $2; }
+    | '[' exprs ']'
+        { $$ = new yy.ListExpr($2); }
     | expr '+' expr
         { $$ = new yy.BinExpr($2, $1, $3); }
     | expr '-' expr
@@ -61,8 +65,8 @@ expr
         { $$ = new yy.SeqExpr($1, $3); }
     | MATCH expr OF matches END
         { $$ = new yy.MatchExpr($2, $4); }
-    | FN ID '->' expr
-        { $$ = new yy.FnExpr($2, $4); }
+    | FN '(' ids ')' '->' expr
+        { $$ = new yy.FnExpr($3, $6); }
     | expr '(' exprs ')'
         { $$ = new yy.AppExpr($1, $3); }
     | TYPE '(' ids ')'

@@ -12,6 +12,10 @@ class exports.StrExpr
   constructor: (@value) ->
   toString: -> 'StrExpr(' + @value + ')'
 
+class exports.ListExpr
+  constructor: (@values) ->
+  toString: -> 'ListExpr(' + @values + ')'
+
 class exports.BinExpr
   constructor: (@kind, @left, @right) ->
   toString: -> 'BinExpr(' + @kind + ', ' + @left + ', ' + @right + ')'
@@ -33,8 +37,8 @@ class exports.MatchExpr
   toString: -> 'MatchExpr(' + @expr + ', ' + @mrules + ')'
 
 class exports.FnExpr
-  constructor: (@id, @expr) ->
-  toString: -> 'FnExpr(' + @id + ', ' + @expr + ')'
+  constructor: (@ids, @expr) ->
+  toString: -> 'FnExpr(' + @ids + ', ' + @expr + ')'
 
 class exports.AppExpr
   constructor: (@expr, @args) ->

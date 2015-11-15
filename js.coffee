@@ -13,7 +13,6 @@ assignStmt = (lval, expr) -> b.expressionStatement (assignExpr lval, expr)
 class Scope
 
   constructor: ->
-    @vars = []
     @nextVar = 0;
     @nextLabel = 0;
 
@@ -27,57 +26,69 @@ class Scope
     @nextLabel++
     name
 
-  translateExpr: (stmts, expr) ->
+  translateBlock: (expr) ->
+    vars = []
+    stmts = []
+    expr = @translateExpr vars, stmts, expr
+    for id in vars
+      declarator = b.variableDeclarator (b.identifier id), null
+      stmts.unshift b.variableDeclaration 'var', [declarator]
+    stmts.push (b.expressionStatement expr)
+    stmts
+
+  translateExpr: (vars, stmts, expr) ->
     if expr instanceof ast.IdExpr
       b.identifier expr.value
     else if expr instanceof ast.NumExpr
       b.literal expr.value
     else if expr instanceof ast.StrExpr
       b.literal expr.value
+    else if expr instanceof ast.ListExpr
+      b.arrayExpression ((@translateExpr vars, stmts, e) for e in expr.values)
     else if expr instanceof ast.BinExpr
-      left = @translateExpr stmts, expr.left
-      right = @translateExpr stmts, expr.right
+      left = @translateExpr vars, stmts, expr.left
+      right = @translateExpr vars, stmts, expr.right
       b.binaryExpression expr.kind, left, right
     else if expr instanceof ast.MemberExpr
-      e = @translateExpr stmts, expr.expr
+      e = @translateExpr vars, stmts, expr.expr
       b.memberExpression e, (idExpr expr.id)
     else if expr instanceof ast.AssignExpr
       # FIXME: Only push var if it is undeclared
       if expr.lval instanceof ast.IdExpr
-        @vars.push expr.lval.value
-      lval = @translateExpr stmts, expr.lval
-      e = @translateExpr stmts, expr.expr
+        vars.push expr.lval.value
+      lval = @translateExpr vars, stmts, expr.lval
+      e = @translateExpr vars, stmts, expr.expr
       b.assignmentExpression '=', lval, e
     else if expr instanceof ast.SeqExpr
-      e = @translateExpr stmts, expr.left
+      e = @translateExpr vars, stmts, expr.left
       stmts.push b.expressionStatement e
-      @translateExpr stmts, expr.right
+      @translateExpr vars, stmts, expr.right
     else if expr instanceof ast.MatchExpr
       resultName = @createVar()
-      @vars.push resultName
+      vars.push resultName
       result = b.identifier resultName
       valueName = @createVar()
-      @vars.push valueName
+      vars.push valueName
       value = b.identifier valueName
       label = b.identifier @createLabel()
       mstmts = []
-      v = @translateExpr mstmts, expr.expr
+      v = @translateExpr vars, mstmts, expr.expr
       mstmts.push (b.expressionStatement (b.assignmentExpression '=', value, v))
       for mrule in expr.mrules
-        bstmts = @translatePat mstmts, value, mrule.pat
-        e = @translateExpr bstmts, mrule.expr
+        bstmts = @translatePat vars, mstmts, value, mrule.pat
+        e = @translateExpr vars, bstmts, mrule.expr
         bstmts.push (b.expressionStatement (b.assignmentExpression '=', result, e))
         bstmts.push (b.breakStatement label)
       stmts.push (b.labeledStatement label, b.blockStatement mstmts)
       result
     else if expr instanceof ast.FnExpr
-      bstmts = []
-      e = @translateExpr bstmts, expr.expr
-      bstmts.push (b.returnStatement e)
-      b.functionExpression null, [b.identifier expr.id], (b.blockStatement bstmts)
+      bstmts = @translateBlock expr.expr
+      stmt = bstmts.pop()
+      bstmts.push (b.returnStatement stmt.expression)
+      b.functionExpression null, ((b.identifier id) for id in expr.ids), (b.blockStatement bstmts)
     else if expr instanceof ast.AppExpr
-      f = @translateExpr stmts, expr.expr
-      args = ((@translateExpr stmts, arg) for arg in expr.args)
+      f = @translateExpr vars, stmts, expr.expr
+      args = ((@translateExpr vars, stmts, arg) for arg in expr.args)
       b.callExpression f, args
     else if expr instanceof ast.TypeExpr
       ids = (b.identifier id for id in expr.fields)
@@ -92,8 +103,9 @@ class Scope
     else
       throw 'Unknown expression: ' + expr
 
-  translatePat: (stmts, expr, pat) ->
+  translatePat: (vars, stmts, expr, pat) ->
     if pat instanceof ast.IdPat
+      vars.push pat.value
       stmts.push (assignStmt (idExpr pat.value), expr)
       stmts
     else if pat instanceof ast.NumPat
@@ -102,7 +114,7 @@ class Scope
       stmts.push (b.ifStatement cond, (b.blockStatement bstmts))
       bstmts
     else if pat instanceof ast.StrPat
-      bstmts = []
+      m bstmts = []
       cond = eqExpr expr, (litExpr pat.value)
       stmts.push (b.ifStatement cond, (b.blockStatement bstmts))
       bstmts
@@ -111,7 +123,7 @@ class Scope
       cond = b.binaryExpression 'instanceof', expr, (idExpr pat.id)
       stmts.push (b.ifStatement cond, b.blockStatement bstmts)
       for field in pat.fields
-        bstmts = @translatePat bstmts, (b.memberExpression expr, (idExpr field.key)), field.pat
+        bstmts = @translatePat vars, bstmts, (b.memberExpression expr, (idExpr field.key)), field.pat
       bstmts
     else
       throw 'Unknown pattern: ' + pat
@@ -119,11 +131,5 @@ class Scope
 
 exports.translate = (ast) ->
   scope = new Scope
-  stmts = []
-  expr = scope.translateExpr stmts, ast
-  for id in scope.vars
-    declarator = b.variableDeclarator (b.identifier id), null
-    stmts.unshift b.variableDeclaration 'var', [declarator]
-  stmts.push (b.expressionStatement expr)
-  result = b.program stmts
+  result = b.program (scope.translateBlock ast)
   recast.print(result).code
