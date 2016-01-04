@@ -1,0 +1,38 @@
+# Setup
+Foo = type(bar);
+foo = Foo();
+
+# Id expressions
+foo;
+
+# Number expressions
+42;
+
+# String expressions
+'foo';
+
+# Binary expressions
+2 + 2;
+
+# Member expressions
+foo.bar;
+
+# Assignment expressions
+x = 42;
+foo.bar = 42;
+
+# Function expressions
+f = fn(x, y) -> x + y;
+
+# Application expressions
+f('foo', 42);
+
+# Type expressions
+T = type(foo, bar);
+
+# Match expressions
+y = match foo of
+    0 -> 'Number'
+  | '0' -> 'String'
+  | x -> 'Var'
+end

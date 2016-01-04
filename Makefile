@@ -6,10 +6,10 @@ clean:
 	rm -f parser.js
 
 test: stop.js
-	node stop.js examples/example.stop
+	node stop.js examples/example.stop | node
 
 stop.js: parser.js stop.stop
-	node stop.js > out.js
+	node stop.js stop.stop > out.js
 	rm stop.js
 	mv out.js stop.js
 

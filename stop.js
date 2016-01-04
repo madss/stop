@@ -554,7 +554,7 @@ Options = function type(encoding) {
 };
 
 options = Options("utf-8");
-input = fs.readFileSync("stop.stop", options);
+input = fs.readFileSync(process.argv.slice(2).shift(), options);
 ast = p.parse(input);
 output = translate(ast);
 console.log(output);
