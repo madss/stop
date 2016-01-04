@@ -524,7 +524,7 @@ translatePat = function(vars, stmts, expr, pat) {
     return $4;
 };
 
-p = require("./__parser.js").parser;
+p = require("./parser").parser;
 p.yy.IdExpr = IdExpr;
 p.yy.NumExpr = NumExpr;
 p.yy.StrExpr = StrExpr;

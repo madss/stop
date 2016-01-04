@@ -152,7 +152,7 @@ translatePat = fn(vars, stmts, expr, pat) -> match pat of
 end;
 
 
-p = require('./__parser.js').parser;
+p = require('./parser').parser;
 p.yy.IdExpr = IdExpr;
 p.yy.NumExpr = NumExpr;
 p.yy.StrExpr = StrExpr;
