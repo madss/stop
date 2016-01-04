@@ -1,3 +1,8 @@
+#######################################################################
+# The abstract syntax tree
+#######################################################################
+
+# Expressions
 IdExpr = type(value);
 NumExpr = type(value);
 StrExpr = type(value);
@@ -11,15 +16,42 @@ FnExpr = type(ids, expr);
 AppExpr = type(expr, args);
 TypeExpr = type(fields);
 
+# Match rules
 MRule = type(pat, expr);
 
+# Patterns
 IdPat = type(value);
 NumPat = type(value);
 StrPat = type(value);
 TypePat = type(id, fields);
 
+# Types
 TypePatField = type(key, pat);
 
+# Expose the AST to the parser
+p = require('./parser').parser;
+p.yy.IdExpr = IdExpr;
+p.yy.NumExpr = NumExpr;
+p.yy.StrExpr = StrExpr;
+p.yy.ListExpr = ListExpr;
+p.yy.BinExpr = BinExpr;
+p.yy.MemberExpr = MemberExpr;
+p.yy.AssignExpr = AssignExpr;
+p.yy.SeqExpr = SeqExpr;
+p.yy.MatchExpr = MatchExpr;
+p.yy.FnExpr = FnExpr;
+p.yy.AppExpr = AppExpr;
+p.yy.TypeExpr = TypeExpr;
+p.yy.MRule = MRule;
+p.yy.IdPat = IdPat;
+p.yy.NumPat = NumPat;
+p.yy.StrPat = StrPat;
+p.yy.TypePat = TypePat;
+p.yy.TypePatField = TypePatField;
+
+#######################################################################
+# Translation
+#######################################################################
 
 recast = require('recast');
 b = recast.types.builders;
@@ -151,26 +183,9 @@ translatePat = fn(vars, stmts, expr, pat) -> match pat of
   | _ -> 'Unknown pattern'
 end;
 
-
-p = require('./parser').parser;
-p.yy.IdExpr = IdExpr;
-p.yy.NumExpr = NumExpr;
-p.yy.StrExpr = StrExpr;
-p.yy.ListExpr = ListExpr;
-p.yy.BinExpr = BinExpr;
-p.yy.MemberExpr = MemberExpr;
-p.yy.AssignExpr = AssignExpr;
-p.yy.SeqExpr = SeqExpr;
-p.yy.MatchExpr = MatchExpr;
-p.yy.FnExpr = FnExpr;
-p.yy.AppExpr = AppExpr;
-p.yy.TypeExpr = TypeExpr;
-p.yy.MRule = MRule;
-p.yy.IdPat = IdPat;
-p.yy.NumPat = NumPat;
-p.yy.StrPat = StrPat;
-p.yy.TypePat = TypePat;
-p.yy.TypePatField = TypePatField;
+#######################################################################
+# Glue
+#######################################################################
 
 fs = require('fs');
 Options = type(encoding);

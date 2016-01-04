@@ -1,6 +1,7 @@
 %lex
 %%
 
+"#".*\n                  { /* skip comments */ }
 \s+                      { /* skip whitespace */ }
 "->"                     { return '->'; }
 "+"                      { return '+'; }

@@ -4,7 +4,6 @@ var input;
 var options;
 var Options;
 var fs;
-var p;
 var translatePat;
 var translateExpr;
 var translateBlock;
@@ -12,6 +11,7 @@ var translate;
 var globals;
 var b;
 var recast;
+var p;
 var TypePatField;
 var TypePat;
 var StrPat;
@@ -186,6 +186,25 @@ TypePatField = function type(key, pat) {
     }
 };
 
+p = require("./parser").parser;
+p.yy.IdExpr = IdExpr;
+p.yy.NumExpr = NumExpr;
+p.yy.StrExpr = StrExpr;
+p.yy.ListExpr = ListExpr;
+p.yy.BinExpr = BinExpr;
+p.yy.MemberExpr = MemberExpr;
+p.yy.AssignExpr = AssignExpr;
+p.yy.SeqExpr = SeqExpr;
+p.yy.MatchExpr = MatchExpr;
+p.yy.FnExpr = FnExpr;
+p.yy.AppExpr = AppExpr;
+p.yy.TypeExpr = TypeExpr;
+p.yy.MRule = MRule;
+p.yy.IdPat = IdPat;
+p.yy.NumPat = NumPat;
+p.yy.StrPat = StrPat;
+p.yy.TypePat = TypePat;
+p.yy.TypePatField = TypePatField;
 recast = require("recast");
 b = recast.types.builders;
 
@@ -524,25 +543,6 @@ translatePat = function(vars, stmts, expr, pat) {
     return $4;
 };
 
-p = require("./parser").parser;
-p.yy.IdExpr = IdExpr;
-p.yy.NumExpr = NumExpr;
-p.yy.StrExpr = StrExpr;
-p.yy.ListExpr = ListExpr;
-p.yy.BinExpr = BinExpr;
-p.yy.MemberExpr = MemberExpr;
-p.yy.AssignExpr = AssignExpr;
-p.yy.SeqExpr = SeqExpr;
-p.yy.MatchExpr = MatchExpr;
-p.yy.FnExpr = FnExpr;
-p.yy.AppExpr = AppExpr;
-p.yy.TypeExpr = TypeExpr;
-p.yy.MRule = MRule;
-p.yy.IdPat = IdPat;
-p.yy.NumPat = NumPat;
-p.yy.StrPat = StrPat;
-p.yy.TypePat = TypePat;
-p.yy.TypePatField = TypePatField;
 fs = require("fs");
 
 Options = function type(encoding) {
