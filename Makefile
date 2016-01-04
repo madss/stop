@@ -1,12 +1,17 @@
 .PHONY: all clean test
 
-all: parser.js
+all: stop.js
 
 clean:
 	rm -f parser.js
 
-test: parser.js
-	./stop.js example.stop
+test: stop.js
+	node stop.js examples/example.stop
+
+stop.js: parser.js stop.stop
+	node stop.js > out.js
+	rm stop.js
+	mv out.js stop.js
 
 parser.js: parser.jison
 	# Add -t to show transitions

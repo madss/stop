@@ -1,0 +1,6 @@
+fib = fn x -> match x of
+  0 -> 1
+| 1 -> 1
+| x -> (fib(x - 1)) + (fib(x - 2))
+end;
+console.log(fib(20))
