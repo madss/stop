@@ -1,4 +1,4 @@
-fib = fn x -> match x of
+fib = fn(x) -> match x of
   0 -> 1
 | 1 -> 1
 | x -> (fib(x - 1)) + (fib(x - 2))
