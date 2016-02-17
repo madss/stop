@@ -157,7 +157,17 @@ translateExpr = fn(vars, stmts, expr) -> match expr of
 end;
 
 translatePat = fn(vars, stmts, expr, pat) -> match pat of
-    IdPat(value=v) -> (
+    IdPat(value='true') -> (
+      bstmts = [];
+      stmts.push(b.ifStatement(expr, b.blockStatement(bstmts)));
+      bstmts
+    )
+  | IdPat(value='false') -> (
+      bstmts = [];
+      stmts.push(b.ifStatement(b.unaryExpression('!', expr), b.blockStatement(bstmts)));
+      bstmts
+    )
+  | IdPat(value=v) -> (
       vars.push(v);
       stmts.push(b.expressionStatement(b.assignmentExpression('=', b.identifier(v), expr)));
       stmts

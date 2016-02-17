@@ -496,12 +496,32 @@ translatePat = function(vars, stmts, expr, pat) {
     var bstmts;
     var v;
     var v;
+    var bstmts;
+    var bstmts;
     var $7;
     var $6;
 
     label3:
     {
         $7 = pat;
+
+        if ($7 instanceof IdPat) {
+            if ($7.value === "true") {
+                bstmts = [];
+                stmts.push(b.ifStatement(expr, b.blockStatement(bstmts)));
+                $6 = bstmts;
+                break label3;
+            }
+        }
+
+        if ($7 instanceof IdPat) {
+            if ($7.value === "false") {
+                bstmts = [];
+                stmts.push(b.ifStatement(b.unaryExpression("!", expr), b.blockStatement(bstmts)));
+                $6 = bstmts;
+                break label3;
+            }
+        }
 
         if ($7 instanceof IdPat) {
             v = $7.value;
