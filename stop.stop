@@ -85,7 +85,11 @@ translateExpr = fn(vars, stmts, expr) -> match expr of
   | BinExpr(kind=bink, left=binl, right=binr) -> (
       binleft = translateExpr(vars, stmts, binl);
       binright = translateExpr(vars, stmts, binr);
-      b.binaryExpression(bink, binleft, binright)
+      match bink of
+        'and' -> b.logicalExpression('&&', binleft, binright)
+      | 'or' -> b.logicalExpression('||', binleft, binright)
+      | op -> b.binaryExpression(bink, binleft, binright)
+      end
     )
   | MemberExpr(expr=e, id=i) -> (
       e = translateExpr(vars, stmts, e);

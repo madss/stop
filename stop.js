@@ -267,13 +267,16 @@ translateExpr = function(vars, stmts, expr) {
     var seql;
     var expr;
     var lval;
-    var $3;
-    var $2;
+    var $5;
+    var $4;
     var e;
     var l;
     var e;
     var i;
     var e;
+    var op;
+    var $3;
+    var $2;
     var binright;
     var binleft;
     var binr;
@@ -324,7 +327,27 @@ translateExpr = function(vars, stmts, expr) {
             binr = $1.right;
             binleft = translateExpr(vars, stmts, binl);
             binright = translateExpr(vars, stmts, binr);
-            $0 = b.binaryExpression(bink, binleft, binright);
+
+            label1:
+            {
+                $3 = bink;
+
+                if ($3 === "and") {
+                    $2 = b.logicalExpression("&&", binleft, binright);
+                    break label1;
+                }
+
+                if ($3 === "or") {
+                    $2 = b.logicalExpression("||", binleft, binright);
+                    break label1;
+                }
+
+                op = $3;
+                $2 = b.binaryExpression(bink, binleft, binright);
+                break label1;
+            }
+
+            $0 = $2;
             break label0;
         }
 
@@ -341,17 +364,17 @@ translateExpr = function(vars, stmts, expr) {
             e = $1.expr;
             "FIXME: Only push var if it is undeclared";
 
-            label1:
+            label2:
             {
-                $3 = l;
+                $5 = l;
 
-                if ($3 instanceof IdExpr) {
-                    $2 = vars.push(l.value);
-                    break label1;
+                if ($5 instanceof IdExpr) {
+                    $4 = vars.push(l.value);
+                    break label2;
                 }
             }
 
-            $2;
+            $4;
             lval = translateExpr(vars, stmts, l);
             expr = translateExpr(vars, stmts, e);
             $0 = b.assignmentExpression("=", lval, expr);
@@ -473,42 +496,42 @@ translatePat = function(vars, stmts, expr, pat) {
     var bstmts;
     var v;
     var v;
-    var $5;
-    var $4;
+    var $7;
+    var $6;
 
-    label2:
+    label3:
     {
-        $5 = pat;
+        $7 = pat;
 
-        if ($5 instanceof IdPat) {
-            v = $5.value;
+        if ($7 instanceof IdPat) {
+            v = $7.value;
             vars.push(v);
             stmts.push(b.expressionStatement(b.assignmentExpression("=", b.identifier(v), expr)));
-            $4 = stmts;
-            break label2;
+            $6 = stmts;
+            break label3;
         }
 
-        if ($5 instanceof NumPat) {
-            v = $5.value;
+        if ($7 instanceof NumPat) {
+            v = $7.value;
             bstmts = [];
             cond = b.binaryExpression("===", expr, b.literal(v));
             stmts.push(b.ifStatement(cond, b.blockStatement(bstmts)));
-            $4 = bstmts;
-            break label2;
+            $6 = bstmts;
+            break label3;
         }
 
-        if ($5 instanceof StrPat) {
-            v = $5.value;
+        if ($7 instanceof StrPat) {
+            v = $7.value;
             bstmts = [];
             cond = b.binaryExpression("===", expr, b.literal(v));
             stmts.push(b.ifStatement(cond, b.blockStatement(bstmts)));
-            $4 = bstmts;
-            break label2;
+            $6 = bstmts;
+            break label3;
         }
 
-        if ($5 instanceof TypePat) {
-            i = $5.id;
-            f = $5.fields;
+        if ($7 instanceof TypePat) {
+            i = $7.id;
+            f = $7.fields;
 
             Body = function type(stmts) {
                 if (this instanceof type) {
@@ -531,16 +554,16 @@ translatePat = function(vars, stmts, expr, pat) {
                 );
             });
 
-            $4 = body.stmts;
-            break label2;
+            $6 = body.stmts;
+            break label3;
         }
 
-        _ = $5;
-        $4 = "Unknown pattern";
-        break label2;
+        _ = $7;
+        $6 = "Unknown pattern";
+        break label3;
     }
 
-    return $4;
+    return $6;
 };
 
 fs = require("fs");

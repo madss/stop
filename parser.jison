@@ -16,6 +16,8 @@
 ")"                      { return ')'; }
 "["                      { return '['; }
 "]"                      { return ']'; }
+"and"                    { return 'AND'; }
+"or"                     { return 'OR'; }
 "match"                  { return 'MATCH'; }
 "of"                     { return 'OF'; }
 "end"                    { return 'END'; }
@@ -34,6 +36,8 @@
 %left ';'
 %left '='
 %left 'FN', 'ID'
+%left 'OR'
+%left 'AND'
 %left '=='
 %left '+', '-'
 %left '.'
@@ -63,6 +67,10 @@ expr
     | expr '-' expr
         { $$ = new yy.BinExpr($2, $1, $3); }
     | expr '==' expr
+        { $$ = new yy.BinExpr($2, $1, $3); }
+    | expr 'AND' expr
+        { $$ = new yy.BinExpr($2, $1, $3); }
+    | expr 'OR' expr
         { $$ = new yy.BinExpr($2, $1, $3); }
     | lval '=' expr
         { $$ = new yy.AssignExpr($1, $3); }
