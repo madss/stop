@@ -6,6 +6,7 @@
 "->"                     { return '->'; }
 "+"                      { return '+'; }
 "-"                      { return '-'; }
+"=="                     { return '=='; }
 "="                      { return '='; }
 "|"                      { return '|'; }
 "."                      { return '.'; }
@@ -33,6 +34,7 @@
 %left ';'
 %left '='
 %left 'FN', 'ID'
+%left '=='
 %left '+', '-'
 %left '.'
 %nonassoc '('
@@ -59,6 +61,8 @@ expr
     | expr '+' expr
         { $$ = new yy.BinExpr($2, $1, $3); }
     | expr '-' expr
+        { $$ = new yy.BinExpr($2, $1, $3); }
+    | expr '==' expr
         { $$ = new yy.BinExpr($2, $1, $3); }
     | lval '=' expr
         { $$ = new yy.AssignExpr($1, $3); }
